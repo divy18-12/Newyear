@@ -147,21 +147,25 @@ function startSurprise() {
   launchConfetti();
 }
 
-document.body.addEventListener("touchstart", () => {
-  timer = setTimeout(startSurprise, 800);
-});
+let holdTimer;
+let activated = false;
 
-document.body.addEventListener("touchend", () => {
-  clearTimeout(timer);
-});
+function startHold() {
+  if (activated) return;
+  holdTimer = setTimeout(() => {
+    activated = true;
+    startSurprise();
+  }, 700);
+}
 
-document.body.addEventListener("mousedown", () => {
-  timer = setTimeout(startSurprise, 800);
-});
+function endHold() {
+  clearTimeout(holdTimer);
+}
 
-document.body.addEventListener("mouseup", () => {
-  clearTimeout(timer);
-});
+document.addEventListener("touchstart", startHold, { passive: true });
+document.addEventListener("touchend", endHold);
+document.addEventListener("mousedown", startHold);
+document.addEventListener("mouseup", endHold);
 
 function launchConfetti() {
   for (let i = 0; i < 60; i++) {
